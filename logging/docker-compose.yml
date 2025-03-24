@@ -8,7 +8,7 @@ services:
     environment:
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=P@ssw0rd#_1234
       - bootstrap.memory_lock=true
-      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "OPENSEARCH_JAVA_OPTS=-Xms1G -Xmx1G"
       - discovery.type=single-node
     ulimits:
       memlock:
@@ -32,7 +32,17 @@ services:
       - logging
     depends_on:
       - opensearch
-    
+  logstash:
+    image: logstash
+    build: ./logstash
+    environment:
+      - OPENSEARCH_HOST=https://opensearch:9200
+      - OPENSEARCH_USER=app_logstash
+      - OPENSEARCH_PASSWORD=AppLogstash#1234
+    ports:
+      - 5044:5044
+    networks:
+      - logging
 volumes:
   opensearch-data:
 networks:
